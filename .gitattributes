@@ -1,0 +1,11 @@
+# O repositorio guarda tudo em LF, e o checkout entrega LF em qualquer sistema.
+#
+# Nao e preferencia de estilo: `docker/dev-entrypoint.sh` roda dentro do
+# container Linux, e um \r no fim da linha faz o `sh` falhar com um erro que
+# nao menciona quebra de linha nenhuma. O mesmo vale para os .sql das
+# migrations e para o Dockerfile.
+* text=auto eol=lf
+
+*.png binary
+*.ico binary
+*.svg text eol=lf

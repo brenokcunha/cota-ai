@@ -1,0 +1,54 @@
+services:
+  web:
+    build:
+      context: .
+      target: dev
+    # A porta do host e configuravel: WEB_PORT=3001 docker compose up
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    environment:
+      PLACES_PROVIDER: scraper
+      DATABASE_URL: postgres://cotaai:cotaai@db:5432/cotaai
+      # Screenshot + HTML de toda ficha que falhar, para consertar seletores.
+      SCRAPER_DEBUG_DIR: /app/.scraper-debug
+    # Opcional: chaves e ajustes locais que não vão para o repositório.
+    env_file:
+      - path: .env.local
+        required: false
+    volumes:
+      - .:/app
+      # node_modules e .next ficam em volume: os binários são de Linux e não
+      # podem vazar para o host (nem o contrário).
+      - node_modules:/app/node_modules
+      - next_cache:/app/.next
+    # O /dev/shm padrão do Docker (64MB) é pequeno para o Chromium e faz a aba
+    # morrer no meio da coleta.
+    shm_size: 1gb
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: cotaai
+      POSTGRES_PASSWORD: cotaai
+      POSTGRES_DB: cotaai
+    # Exposto para inspecionar com psql/DBeaver do host. Porta alta de propósito,
+    # para não brigar com um Postgres local na 5432.
+    ports:
+      - "${DB_PORT:-55432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # O web só sobe depois que o banco aceita conexão — senão a migration da
+    # instrumentação falha na primeira subida e o cache fica desligado.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cotaai -d cotaai"]
+      interval: 3s
+      timeout: 3s
+      retries: 15
+
+volumes:
+  node_modules:
+  next_cache:
+  postgres_data:

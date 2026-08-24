@@ -231,6 +231,63 @@ Três lugares valem a atenção de quem for mexer:
 - A cotação é um objeto serializável só. É isso que faz ela caber no `localStorage` e
   virar link de retomada sem código extra.
 
+## Deploy
+
+Roda como container único no **Fly.io**. A escolha entre Fly, Railway e Render foi por
+um motivo específico deste produto: **só o Fly tem região no Brasil** (`gru`, São Paulo).
+Isso pesa duas vezes aqui — latência para o usuário, e um IP brasileiro raspando o
+Google Maps brasileiro. De um datacenter americano o Google tende a servir muro de
+consentimento e resultados enviesados, que é o risco #1 do PRD.
+
+> **Por que não Vercel:** o scraper carrega 1,3 GB de Chromium e uma busca leva de 40s a
+> 2min. Os limites de função da Vercel são 250 MB e 60s (300s no Pro). Não é questão de
+> configuração — não cabe. O PRD §6.4 já previa isso e desenha um worker separado; até
+> ele existir, o app inteiro roda num container só.
+
+```bash
+fly launch --no-deploy --copy-config
+fly postgres create --region gru
+fly secrets set DATABASE_URL="postgres://…"
+fly deploy
+```
+
+O `fly.toml` versionado já traz o essencial: região `gru`, 2 GB de RAM com swap (o
+Chromium tem picos ao abrir aba), limite de 6 buscas simultâneas (cada uma segura um
+Chromium inteiro), e `release_command` aplicando as migrations **antes** da nova versão
+receber tráfego.
+
+### Migrations
+
+Um caminho só, local e em produção:
+
+```bash
+npm run migrate      # ou: node scripts/migrate.mjs
+```
+
+Localmente o entrypoint do container roda isso antes do `next dev`; no Fly, o
+`release_command`. Não rodam mais na subida do servidor: num deploy com mais de uma
+instância, a primeira a subir migraria o banco enquanto as outras ainda servem o código
+antigo.
+
+### Variáveis em produção
+
+| Variável | Obrigatória | Observação |
+| --- | --- | --- |
+| `DATABASE_URL` | sim | Use a connection string **pooled** se o provedor oferecer |
+| `PLACES_PROVIDER` | não | `scraper` é o padrão |
+| `NOMINATIM_URL` | não | Aponte para provedor próprio antes de ter volume |
+| `SCRAPER_PROXY_URL` | não | Se o Google começar a apresentar CAPTCHA |
+
+### A imagem
+
+`docker build --target runner -t cota-ai:prod .` — 2,5 GB, quase tudo Chromium. Usa a
+saída `standalone` do Next e roda como usuário não-root.
+
+Um detalhe que custou uma depuração: o rastreamento de dependências do `standalone`
+segue `import`, e o Playwright lê arquivos de dados que ninguém importa
+(`browsers.json`, o binário do driver). Sem o `outputFileTracingIncludes` do
+`next.config.ts`, a imagem sobe normalmente e só quebra na primeira busca.
+
 ## Documentação
 
 [PRD completo](docs/PRD.md) — problema, escopo do MVP, decisões técnicas, monetização e riscos.

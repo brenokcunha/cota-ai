@@ -1,0 +1,60 @@
+# Deploy do cota-ai no Fly.io.
+#
+# Fly foi escolhido entre Fly/Railway/Render por um motivo específico deste
+# produto: é o único com região no Brasil (`gru`, São Paulo). Isso importa duas
+# vezes aqui — latência para o usuário, e, mais importante, um IP brasileiro
+# raspando o Google Maps brasileiro. De um datacenter americano o Google tende
+# a servir muro de consentimento e resultados enviesados, que é exatamente o
+# risco #1 do PRD.
+#
+# Primeira vez:
+#   fly launch --no-deploy --copy-config
+#   fly postgres create --region gru        # anote a connection string
+#   fly secrets set DATABASE_URL="postgres://..."
+#   fly deploy
+
+app = "cota-ai"
+primary_region = "gru"
+
+[build]
+  # O Dockerfile tem alvo de dev e de produção; explícito para não depender da
+  # ordem dos estágios no arquivo.
+  target = "runner"
+
+[deploy]
+  # Schema aplicado ANTES da nova versão receber tráfego. Rodar isso de dentro
+  # do servidor faria a instância que subir primeiro migrar o banco enquanto as
+  # outras ainda servem o código antigo.
+  release_command = "node scripts/migrate.mjs"
+
+[env]
+  PLACES_PROVIDER = "scraper"
+  # Ritmo da coleta. O padrão do código é conservador de propósito (risco #1);
+  # subir isso é assumir mais risco de bloqueio em troca de velocidade.
+  SCRAPER_DELAY_MS = "1200"
+  SCRAPER_MAX_RESULTS = "60"
+  NOMINATIM_USER_AGENT = "cota-ai/0.1 (https://github.com/brenokcunha/cota-ai)"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  # A máquina fica de pé: um cold start aqui significa subir uma imagem de
+  # 2,5GB com o Chromium dentro, e a primeira busca do dia pagaria a conta.
+  # Trocar para `min_machines_running = 0` economiza, ao custo dessa espera.
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [http_service.concurrency]
+    type = "requests"
+    # Cada busca segura um Chromium inteiro na memória. Mais que isso em
+    # paralelo estoura os 2GB da máquina antes de estourar a CPU.
+    hard_limit = 6
+    soft_limit = 3
+
+[[vm]]
+  size = "shared-cpu-2x"
+  memory = "2gb"
+  # O Chromium tem picos curtos de memória ao abrir uma aba nova; sem swap, o
+  # pico vira OOM e derruba a busca inteira em vez de ficar um pouco mais lenta.
+  swap_size_mb = 512

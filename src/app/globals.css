@@ -22,5 +22,27 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Faixa da barra de progresso indeterminada (busca sem total conhecido). */
+@keyframes cota-scan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+.cota-scan {
+  animation: cota-scan 1.4s ease-in-out infinite;
+}
+
+/* Quem pediu menos animacao ve uma barra parada, nao uma correndo. */
+@media (prefers-reduced-motion: reduce) {
+  .cota-scan {
+    animation: none;
+    width: 100%;
+    opacity: 0.5;
+  }
 }

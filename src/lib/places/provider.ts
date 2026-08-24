@@ -1,4 +1,4 @@
-import type { SearchQuery, SearchResult } from "./types";
+import type { Establishment, SearchQuery, SearchResult } from "./types";
 
 /**
  * Fonte de estabelecimentos.
@@ -9,18 +9,58 @@ import type { SearchQuery, SearchResult } from "./types";
  */
 export interface PlacesProvider {
   readonly name: string;
-  search(query: SearchQuery): Promise<SearchResult>;
+  search(query: SearchQuery, options?: SearchOptions): Promise<SearchResult>;
+}
+
+/**
+ * Em que pé está a coleta.
+ *
+ * Existe porque os primeiros segundos de uma busca nova não produzem nenhum
+ * resultado — sobe browser, abre o Google, rola o feed — e sem isso a tela
+ * fica muda e parece travada.
+ */
+export interface SearchProgress {
+  phase: "starting" | "listing" | "collecting";
+  /** Quantas fichas serão lidas. Só existe a partir de `collecting`. */
+  total?: number;
+}
+
+export interface SearchOptions {
+  /** Chamado a cada mudança de fase da coleta. */
+  onProgress?(progress: SearchProgress): void;
+
+  /**
+   * Chamado assim que cada ficha fica pronta.
+   *
+   * É o que permite a tela mostrar resultado enquanto a coleta continua: uma
+   * busca nova leva dezenas de segundos, e o PRD §6.6 pede feedback de
+   * progresso em vez de uma espera cega.
+   */
+  onEstablishment?(establishment: Establishment, index: number): void;
+  /** Aborta a coleta quando o cliente desiste (fecha a aba, cancela a busca). */
+  signal?: AbortSignal;
 }
 
 export type PlacesProviderId = "scraper" | "places-api" | "own-db";
 
 /**
- * Resolve o provider ativo a partir de PLACES_PROVIDER.
+ * Resolve o provider ativo a partir de PLACES_PROVIDER, com o cache por cima
+ * quando há banco configurado (PRD §6.3).
  *
- * Import dinâmico de propósito: o scraper carrega Playwright, que não deve
- * entrar no bundle das rotas que servem do cache.
+ * Imports dinâmicos de propósito: o scraper carrega Playwright e o cache
+ * carrega `pg`, e nenhum dos dois deve entrar no bundle de quem não usa.
  */
 export async function getPlacesProvider(): Promise<PlacesProvider> {
+  const source = await getSourceProvider();
+
+  const { hasDatabase } = await import("../db/pool");
+  if (!hasDatabase()) return source;
+
+  const { CachedPlacesProvider } = await import("./cached-provider");
+  return new CachedPlacesProvider(source);
+}
+
+async function getSourceProvider(): Promise<PlacesProvider> {
   const id = (process.env.PLACES_PROVIDER ?? "scraper") as PlacesProviderId;
 
   switch (id) {

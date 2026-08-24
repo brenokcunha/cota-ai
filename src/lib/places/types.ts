@@ -24,6 +24,8 @@ export interface Establishment {
   /** Categoria como reportada pela fonte (ex: "Pousada", "Floricultura"). */
   category: string | null;
   address: string | null;
+  /** Bairro, quando o endereço traz. Alimenta o autocomplete da busca. */
+  neighborhood: string | null;
   city: string | null;
   state: string | null;
   lat: number | null;
@@ -37,11 +39,30 @@ export interface Establishment {
   scrapedAt: string;
 }
 
+/**
+ * Ponto no mapa e raio, quando o usuário desenha a área em vez de digitá-la.
+ *
+ * Não substitui a busca por texto: é outro jeito de dizer "onde", para quando
+ * a região que interessa não tem nome (a orla, o trecho entre duas cidades).
+ */
+export interface SearchCenter {
+  lat: number;
+  lng: number;
+  radiusKm: number;
+}
+
 export interface SearchQuery {
   /** O que buscar, em texto livre: "pousada", "floricultura". */
   category: string;
-  /** Onde buscar: "Paraty RJ", "Moema, São Paulo". */
+  /**
+   * Onde buscar: "Paraty RJ", "Moema, São Paulo".
+   *
+   * Com `center` preenchido, isto vira só o rótulo que aparece na tela — quem
+   * manda na coleta é o ponto.
+   */
   region: string;
+  /** Área desenhada no mapa. Ausente numa busca por texto. */
+  center?: SearchCenter;
   /** Teto de resultados. O provider pode devolver menos. */
   limit?: number;
 }

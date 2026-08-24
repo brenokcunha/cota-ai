@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# cota-ai
 
-## Getting Started
+Cote com vários estabelecimentos de uma região ao mesmo tempo, pelo WhatsApp.
 
-First, run the development server:
+Você informa **o que quer**, **onde** e **qual a pergunta**. O cota-ai lista os
+estabelecimentos daquele tipo na região, você seleciona os que interessam, escreve uma
+mensagem padrão, e envia para todos — um clique cada, mensagem já preenchida, do seu
+próprio WhatsApp.
+
+> Cotar com 15 pousadas leva 15 cliques, não 45 minutos.
+
+## Por que existe
+
+Booking e Airbnb resolvem descoberta e reserva, mas em destinos menores boa parte das
+pousadas não está em plataforma nenhuma — e em Carnaval e Réveillon muitas **saem** da
+plataforma para negociar direto e não pagar comissão. Fora de turismo (floricultura,
+buffet, oficina) não existe equivalente nenhum. A negociação acontece no WhatsApp; o que
+falta é ferramenta para operar esse canal em escala.
+
+## Como funciona o envio
+
+O cota-ai **não dispara mensagens sozinho**. Ele monta a mensagem personalizada e abre o
+WhatsApp com ela pronta — você confirma cada envio. Isso mantém o produto dentro dos
+Termos do WhatsApp e faz as respostas chegarem direto no seu WhatsApp, onde você quer
+negociar.
+
+## Stack
+
+- **Next.js 15** (App Router) + TypeScript + Tailwind
+- **Postgres** (Supabase) para cache de buscas e base de estabelecimentos
+- **Playwright** para coleta, em worker separado
+
+## Rodando localmente
 
 ```bash
+npm install
+cp .env.example .env.local   # preencha as variáveis
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre em http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Estrutura
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+docs/PRD.md              Documento de produto — leia antes de mexer no escopo
+src/app/                 Rotas e UI (App Router)
+src/lib/places/          Busca de estabelecimentos, atrás da interface PlacesProvider
+src/lib/whatsapp.ts      Template da mensagem e deep link de envio
+```
 
-## Learn More
+A busca sempre passa por `PlacesProvider` (`src/lib/places/provider.ts`), nunca pelo
+scraper direto. Trocar a fonte de dados é mudar `PLACES_PROVIDER` — não refatorar.
 
-To learn more about Next.js, take a look at the following resources:
+## Documentação
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[PRD completo](docs/PRD.md) — problema, escopo do MVP, decisões técnicas, monetização e riscos.

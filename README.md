@@ -290,4 +290,6 @@ segue `import`, e o Playwright lê arquivos de dados que ninguém importa
 
 ## Documentação
 
-[PRD completo](docs/PRD.md) — problema, escopo do MVP, decisões técnicas, monetização e riscos.
+- [PRD](docs/PRD.md) — problema, escopo do MVP, decisões técnicas, monetização e riscos.
+- [Retomada](docs/RETOMADA.md) — onde o projeto parou, o que falta e as armadilhas
+  conhecidas. Comece por aqui se estiver voltando ao projeto depois de um tempo.

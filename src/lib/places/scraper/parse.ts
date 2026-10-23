@@ -3,7 +3,7 @@
  *
  * Ficam separadas do Playwright de propósito: são elas que quebram quando o
  * Google muda formato, e são as únicas testáveis sem subir um browser
- * (os testes de contrato do PRD §8, risco 2, batem aqui).
+ * (os testes de contrato batem aqui).
  */
 
 /**
@@ -14,7 +14,7 @@
 export function parsePlaceId(url: string): string | null {
   // O `place_id` de verdade (`ChIJ...`) vem em `!19s`. E o mesmo id que a
   // Places API usa, entao guardar ele agora e o que vai permitir trocar de
-  // fonte sem reidentificar a base inteira (PRD 6.2).
+  // fonte sem reidentificar a base inteira.
   const placeId = url.match(/!19s(ChIJ[\w-]+)/);
   if (placeId) return placeId[1];
 

@@ -3,7 +3,7 @@ import { suggestKnownRegions } from "@/lib/places/repository";
 import { searchDistritos, searchMunicipios } from "@/lib/regions/ibge";
 
 /**
- * RF-01 — autocomplete de região.
+ * Autocomplete de região.
  *
  * `GET /api/regions?q=cara` -> `{"regions":["Caraguatatuba SP","Caraíva, Porto Seguro BA", …]}`
  *

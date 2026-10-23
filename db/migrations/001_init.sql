@@ -1,9 +1,9 @@
--- Schema inicial do cota-ai (PRD §6.5).
+-- Schema inicial do cota-ai.
 --
--- Duas diferenças em relação ao PRD, ambas deliberadas:
+-- Duas decisões deliberadas de modelagem:
 --
 -- 1. `establishments.whatsapp` é texto de três estados, não o booleano
---    `has_whatsapp` do documento. O próprio PRD (§8, risco 3) manda "marcar
+--    `has_whatsapp`. O produto deve "marcar
 --    como incerto em vez de prometer", e um booleano não sabe dizer "não sei".
 --
 -- 2. `search_cache` guarda `place_id` e não o id interno. O place_id sobrevive
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS search_cache (
 
 CREATE INDEX IF NOT EXISTS search_cache_expires_at_idx ON search_cache (expires_at);
 
--- Cotação anônima: sem login, a chave de volta é o share_token (PRD §5.1, RF-08).
+-- Cotação anônima: sem login, a chave de volta é o share_token.
 CREATE TABLE IF NOT EXISTS quotes (
   id               BIGSERIAL PRIMARY KEY,
   share_token      TEXT NOT NULL UNIQUE,
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS quotes (
 );
 
 -- `position` preserva a ordem que o usuário viu na tela: o disparo sequencial
--- (RF-06) percorre a lista nessa ordem, e retomar em outro aparelho tem que
+-- percorre a lista nessa ordem, e retomar em outro aparelho tem que
 -- continuar de onde parou, não de uma ordem qualquer do banco.
 CREATE TABLE IF NOT EXISTS quote_targets (
   id               BIGSERIAL PRIMARY KEY,

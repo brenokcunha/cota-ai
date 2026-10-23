@@ -3,7 +3,7 @@
 import { useQuote } from "@/components/quote-provider";
 import { SendFlow } from "@/components/send-flow";
 
-/** Etapa 3: o disparo sequencial (RF-06) e o link de retomada (RF-08). */
+/** Etapa 3: o disparo sequencial e o link de retomada. */
 export default function EnviarPage() {
   const { state } = useQuote();
 

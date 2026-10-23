@@ -9,7 +9,7 @@ import type { Quote } from "@/lib/quote/types";
 import { useQuote } from "./quote-provider";
 
 /**
- * RF-08 — recebe a cotação do servidor e a instala no navegador de quem abriu
+ * Recebe a cotação do servidor e a instala no navegador de quem abriu
  * o link, como se ela tivesse sido feita ali.
  *
  * A partir daqui a cotação é local: as próximas mudanças vão para o

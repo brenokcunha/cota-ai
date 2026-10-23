@@ -6,7 +6,7 @@ import type { ScraperConfig } from "./config";
  *
  * Um browser por busca: mais lento que um pool, mas não guarda estado entre
  * buscas e não vaza processo quando a coleta falha no meio. Vale rever quando
- * o worker do PRD §6.4 existir e as buscas forem enfileiradas.
+ * um worker separado existir e as buscas forem enfileiradas.
  */
 
 /** UA de Chrome estável — o headless padrão se anuncia e é filtrado. */

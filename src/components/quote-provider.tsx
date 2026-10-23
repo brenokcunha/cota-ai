@@ -25,7 +25,7 @@ import { loadState, saveState } from "@/lib/quote/storage";
  *
  * As três telas (lista, mensagem, disparo) são passos do mesmo trabalho, e o
  * usuário vai e volta entre elas. Estado por página obrigaria a repassar tudo
- * por URL, que é justamente o que o link de retomada (RF-08) já faz — e só
+ * por URL, que é justamente o que o link de retomada já faz — e só
  * quando o usuário pede.
  */
 
@@ -34,7 +34,7 @@ interface QuoteContextValue {
   dispatch: (action: QuoteAction) => void;
   search(params: SearchParams): Promise<void>;
   cancelSearch(): void;
-  /** Grava a cotação e devolve a URL de retomada (RF-08). */
+  /** Grava a cotação e devolve a URL de retomada. */
   createShareLink(): Promise<string>;
 }
 
@@ -59,7 +59,7 @@ export function QuoteProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "hydrate", state: loadState() });
   }, []);
 
-  // RF-07: grava a cada mudança. Antes de hidratar não grava, senão o estado
+  // Grava a cada mudança. Antes de hidratar não grava, senão o estado
   // inicial vazio sobrescreveria o que estava salvo.
   useEffect(() => {
     if (state.hydrated) saveState(state);

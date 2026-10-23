@@ -3,7 +3,7 @@ import { getPlacesProvider } from "@/lib/places/provider";
 import type { SearchCenter, SearchQuery } from "@/lib/places/types";
 
 /**
- * RF-01 — busca de estabelecimentos.
+ * Busca de estabelecimentos.
  *
  * `GET /api/search?categoria=pousada&regiao=Paraty%20RJ&limite=10`
  * `GET /api/search?categoria=pousada&lat=-23.21&lng=-44.71&raio=5&limite=10`
@@ -15,11 +15,11 @@ import type { SearchCenter, SearchQuery } from "@/lib/places/types";
  *
  * - `application/x-ndjson` — um evento por linha, cada ficha chegando assim que
  *   fica pronta. É o que a tela usa: uma busca nova leva dezenas de segundos e
- *   o PRD §6.6 pede progresso, não uma ampulheta.
+ *   a tela deve mostrar progresso, não uma ampulheta.
  * - qualquer outro — um JSON só, no fim. Serve para `curl` e para scripts.
  *
- * A rota é só a porta de entrada: quem sabe buscar é o `PlacesProvider`
- * (PRD §6.2). Trocar scraping por Places API não encosta neste arquivo.
+ * A rota é só a porta de entrada: quem sabe buscar é o `PlacesProvider`.
+ * Trocar scraping por Places API não encosta neste arquivo.
  */
 
 // Playwright precisa do runtime Node, e a coleta é sempre em tempo de request.

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useQuote } from "./quote-provider";
 
 /**
- * RF-08 — link que restaura a cotação em outro aparelho.
+ * Link que restaura a cotação em outro aparelho.
  *
  * O link só é criado quando o usuário pede: enquanto ele não pedir, a cotação
  * não sai do navegador dele, o que é o comportamento mais previsível para

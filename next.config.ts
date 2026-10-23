@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // O dev server do Next 16 recusa requisicoes cross-origin aos assets de
+  // desenvolvimento. Sem isto, expor `npm run dev` por um tunel (Cloudflare,
+  // ngrok) serve a pagina mas quebra os assets, com erro que nao menciona
+  // origem. So vale em desenvolvimento; producao ignora esta chave.
+  allowedDevOrigins: ["*.trycloudflare.com"],
   // Imagem de producao enxuta: o build gera `.next/standalone` com um server.js
   // e so as dependencias que o servidor de fato usa, em vez do node_modules
   // inteiro. Com o Chromium ja pesando 1,3GB, cada camada evitavel conta.

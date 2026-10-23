@@ -3,7 +3,6 @@
  *
  * Estes tipos são a fronteira estável do sistema: qualquer fonte de dados
  * (scraper, Places API, base própria) precisa produzir `Establishment`.
- * Ver PRD §6.2.
  */
 
 /** Origem do dado, para auditoria e para decidir política de cache. */
@@ -13,7 +12,7 @@ export type EstablishmentSource = "google-maps-scraper" | "google-places-api" | 
  * Confiança de que o telefone atende no WhatsApp.
  *
  * No MVP isso é heurístico (celular vs fixo pelo formato do número), então o
- * produto nunca promete — no máximo indica. Ver PRD §8, risco 3.
+ * produto nunca promete — no máximo indica.
  */
 export type WhatsappConfidence = "likely" | "unlikely" | "unknown";
 
@@ -77,7 +76,7 @@ export interface SearchResult {
   fromCache: boolean;
   /**
    * Resultado parcial: a coleta falhou no meio mas devolvemos o que deu.
-   * Nunca devolver tela branca. Ver PRD §6.6.
+   * Nunca devolver tela branca.
    */
   partial: boolean;
 }

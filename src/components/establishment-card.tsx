@@ -4,7 +4,7 @@ import { formatPhone, formatRating, formatReviews, whatsappLabel } from "@/lib/f
 import type { Establishment } from "@/lib/places/types";
 
 /**
- * RF-02 — um resultado da busca.
+ * Um resultado da busca.
  *
  * Estabelecimento sem telefone continua aparecendo, marcado como não
  * contatável: escondê-lo faria a lista parecer menor do que a realidade, e o

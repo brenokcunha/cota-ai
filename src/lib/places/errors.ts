@@ -2,7 +2,7 @@
  * Erros de domínio da busca.
  *
  * A UI e as rotas tratam estes tipos, nunca erros do Playwright: trocar a
- * fonte de dados (PRD §6.2) não pode obrigar a reescrever tratamento de erro.
+ * fonte de dados não pode obrigar a reescrever tratamento de erro.
  */
 
 export class PlacesError extends Error {

@@ -1,7 +1,7 @@
 import ibge from "./ibge.json";
 
 /**
- * Municípios e distritos brasileiros, do IBGE (RF-01).
+ * Municípios e distritos brasileiros, do IBGE.
  *
  * Distritos estão aqui porque destino turístico muitas vezes não é município:
  * Caraíva, Trancoso e Arraial D'Ajuda são distritos de Porto Seguro. Sem eles

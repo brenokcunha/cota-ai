@@ -28,7 +28,7 @@ export function formatReviews(count: number | null): string | null {
 /**
  * Como o produto fala sobre a confiança de WhatsApp.
  *
- * O texto nunca afirma: a checagem é heurística (PRD §8, risco 3) e prometer
+ * O texto nunca afirma: a checagem é heurística e prometer
  * WhatsApp que não existe queima a confiança logo no primeiro disparo.
  */
 export function whatsappLabel(confidence: WhatsappConfidence, hasPhone: boolean): {

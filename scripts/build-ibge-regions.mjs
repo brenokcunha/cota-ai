@@ -1,6 +1,6 @@
 /**
  * Baixa municípios e distritos do IBGE e grava a versão enxuta que a aplicação
- * usa no autocomplete (RF-01).
+ * usa no autocomplete.
  *
  *   node scripts/build-ibge-regions.mjs
  *

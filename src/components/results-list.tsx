@@ -9,10 +9,10 @@ import { EstablishmentCard } from "./establishment-card";
 import { useQuote } from "./quote-provider";
 
 /**
- * RF-02, RF-03 e RF-04: a lista, seus filtros e a seleção múltipla.
+ * A lista, seus filtros e a seleção múltipla.
  *
  * Os resultados aparecem enquanto a coleta acontece — dá para começar a
- * escolher antes de a busca terminar, que é o ponto do streaming (PRD §6.6).
+ * escolher antes de a busca terminar, que é o ponto do streaming.
  */
 
 const SORTS: ReadonlyArray<{ key: SortKey; label: string }> = [
@@ -55,7 +55,7 @@ export function ResultsList() {
   }
 
   // Só quem tem telefone pode ser selecionado — os demais aparecem, mas o
-  // "selecionar todos" não os inclui (RF-02).
+  // "selecionar todos" não os inclui.
   const contactable = visible.filter(isContactable);
   const withWhatsapp = contactable.filter((e) => e.whatsapp === "likely");
   const allSelected = contactable.length > 0 && contactable.every((e) => selected.has(e.placeId));

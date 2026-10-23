@@ -5,7 +5,7 @@ import { SearchForm } from "@/components/search-form";
 import { SearchProgress } from "@/components/search-progress";
 import { useQuote } from "@/components/quote-provider";
 
-/** Etapa 1: achar os estabelecimentos (RF-01 a RF-04). */
+/** Etapa 1: achar os estabelecimentos. */
 export default function BuscaPage() {
   const { state } = useQuote();
 

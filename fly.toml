@@ -5,7 +5,7 @@
 # vezes aqui — latência para o usuário, e, mais importante, um IP brasileiro
 # raspando o Google Maps brasileiro. De um datacenter americano o Google tende
 # a servir muro de consentimento e resultados enviesados, que é exatamente o
-# risco #1 do PRD.
+# risco #1 do projeto.
 #
 # Primeira vez:
 #   fly launch --no-deploy --copy-config

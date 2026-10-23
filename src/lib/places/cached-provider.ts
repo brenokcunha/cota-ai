@@ -3,7 +3,7 @@ import { findFreshSearch, saveSearch } from "./repository";
 import type { SearchQuery, SearchResult } from "./types";
 
 /**
- * Cache híbrido do PRD §6.3, como um envelope em volta da fonte real.
+ * Cache híbrido, como um envelope em volta da fonte real.
  *
  * Busca repetida dentro do TTL sai do Postgres, instantânea. Busca nova vai ao
  * scraper e o resultado fica gravado — é assim que a base própria, o ativo da

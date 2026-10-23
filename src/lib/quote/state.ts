@@ -5,13 +5,13 @@ import type { QuoteTarget, TargetStatus } from "./types";
  * O estado da cotação no navegador e as transições possíveis.
  *
  * É um reducer puro de propósito: a cotação inteira precisa caber num objeto
- * serializável para sobreviver a um refresh (RF-07) e para virar link de
- * retomada (RF-08). Nada de estado escondido em componente.
+ * serializável para sobreviver a um refresh e para virar link de
+ * retomada. Nada de estado escondido em componente.
  */
 
 export type SortKey = "relevancia" | "nota" | "avaliacoes";
 
-/** Guardamos o instante do envio junto do status: o link de retomada (RF-08)
+/** Guardamos o instante do envio junto do status: o link de retomada
  *  mostra o que já foi disparado e quando. */
 export interface ProgressEntry {
   status: TargetStatus;
@@ -28,14 +28,14 @@ export interface QuoteState {
   center: SearchCenter | null;
   /** Na ordem em que a fonte devolveu — é essa a "relevância". */
   establishments: Establishment[];
-  /** placeIds marcados (RF-04). */
+  /** placeIds marcados. */
   selected: string[];
   sort: SortKey;
   onlyWhatsapp: boolean;
   template: string;
-  /** Campos livres do usuário, além do `{{nome}}` embutido (RF-05). */
+  /** Campos livres do usuário, além do `{{nome}}` embutido. */
   variables: Record<string, string>;
-  /** Onde o disparo parou, por placeId (RF-06). */
+  /** Onde o disparo parou, por placeId. */
   progress: Record<string, ProgressEntry>;
   shareToken: string | null;
   /** `false` até o `localStorage` ser lido; evita a tela piscar vazia. */
@@ -241,13 +241,13 @@ function sortEstablishments(establishments: Establishment[], sort: SortKey): Est
   });
 }
 
-/** A lista como ela aparece na tela: ordenada e filtrada (RF-03). */
+/** A lista como ela aparece na tela: ordenada e filtrada. */
 export function visibleEstablishments(state: QuoteState): Establishment[] {
   const sorted = sortEstablishments(state.establishments, state.sort);
   return state.onlyWhatsapp ? sorted.filter((e) => e.whatsapp === "likely") : sorted;
 }
 
-/** Só dá para disparar para quem tem telefone (RF-02). */
+/** Só dá para disparar para quem tem telefone. */
 export function isContactable(establishment: Establishment): boolean {
   return Boolean(establishment.phoneE164);
 }

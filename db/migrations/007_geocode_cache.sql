@@ -1,4 +1,4 @@
--- Cache de geocodificacao: nome de regiao -> coordenada (RF-01).
+-- Cache de geocodificacao: nome de regiao -> coordenada.
 --
 -- Serve para o mapa ja mostrar a regiao que a pessoa digitou, antes de buscar.
 --

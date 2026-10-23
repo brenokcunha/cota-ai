@@ -1,7 +1,7 @@
 import { geocodeRegion } from "@/lib/regions/geocode";
 
 /**
- * RF-01 — onde fica a região que a pessoa digitou.
+ * Onde fica a região que a pessoa digitou.
  *
  * `GET /api/geocode?q=Caraíva, Porto Seguro BA` -> `{"lat":…, "lng":…, "label":…}`
  *

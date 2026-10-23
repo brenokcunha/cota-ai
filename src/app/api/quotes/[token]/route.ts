@@ -1,7 +1,7 @@
 import { hasDatabase } from "@/lib/db/pool";
 import { findQuote } from "@/lib/quote/repository";
 
-/** RF-08 — devolve a cotação de um link de retomada. */
+/** Devolve a cotação de um link de retomada. */
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

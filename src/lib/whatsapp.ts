@@ -4,7 +4,7 @@ import type { Establishment } from "./places/types";
  * Montagem da mensagem e do deep link de envio.
  *
  * O envio nunca é automatizado: geramos o link, o usuário confirma o disparo no
- * próprio WhatsApp dele. Essa é a decisão fundamental do produto (PRD §6.1) —
+ * próprio WhatsApp dele. Essa é a decisão fundamental do produto —
  * é o que mantém o cota-ai dentro dos Termos e faz a resposta chegar direto no
  * usuário, sem precisarmos construir um inbox.
  */

@@ -9,7 +9,7 @@ import { MapPicker } from "./map-picker";
 import { useQuote } from "./quote-provider";
 
 /**
- * RF-01 na tela: o que você quer e onde.
+ * A busca na tela: o que você quer e onde.
  *
  * "Onde" tem dois caminhos, e os dois ficam visíveis ao mesmo tempo: um rádio
  * diz qual vale para a busca. Escondê-los atrás de abas obrigava a decidir
@@ -46,7 +46,7 @@ export function SearchForm() {
   const running = state.search.status === "running";
   const byMap = state.mode === "map";
 
-  // Autocomplete de região (RF-01). O atraso evita uma consulta por tecla, e o
+  // Autocomplete de região. O atraso evita uma consulta por tecla, e o
   // `AbortController` impede que uma resposta lenta sobrescreva uma recente.
   useEffect(() => {
     const controller = new AbortController();
@@ -231,7 +231,7 @@ export function SearchForm() {
             className="w-full rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-700 dark:bg-slate-900"
           />
           {/* `datalist` sugere sem prender: o campo continua aceitando
-              qualquer texto, que é o que o PRD pede para região. */}
+              qualquer texto, que é o que a região precisa. */}
           <datalist id="regioes-sugeridas">
             {regionSuggestions.map((suggestion) => (
               <option key={suggestion} value={suggestion} />

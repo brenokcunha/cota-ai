@@ -3,10 +3,10 @@ import { saveQuote } from "@/lib/quote/repository";
 import { QuoteValidationError, parseQuoteInput } from "@/lib/quote/validate";
 
 /**
- * RF-08 — grava a cotação e devolve o token do link de retomada.
+ * Grava a cotação e devolve o token do link de retomada.
  *
  * `POST /api/quotes` cria; mandar `shareToken` no corpo atualiza a existente,
- * que é como o progresso do disparo (RF-06) acompanha o link.
+ * que é como o progresso do disparo acompanha o link.
  */
 
 export const runtime = "nodejs";

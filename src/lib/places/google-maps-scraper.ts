@@ -22,14 +22,14 @@ import { BLOCK_PHRASES, SELECTORS, buildSearchUrl } from "./scraper/selectors";
 import type { Establishment, SearchQuery, SearchResult } from "./types";
 
 /**
- * RF-01 — coleta listagens públicas do Google Maps via browser headless.
+ * Coleta listagens públicas do Google Maps via browser headless.
  *
  * O fluxo é: abrir a busca, rolar o feed até juntar links suficientes, e então
  * visitar cada ficha para pegar o telefone — que é o dado que o produto existe
  * para entregar e o único que o feed não mostra.
  *
  * Roda em processo Node de vida longa (container/worker), não em serverless:
- * um browser headless não cabe no timeout da Vercel (PRD §6.4).
+ * um browser headless não cabe no timeout da Vercel.
  */
 export class GoogleMapsScraperProvider implements PlacesProvider {
   readonly name = "google-maps-scraper";
@@ -73,7 +73,7 @@ export class GoogleMapsScraperProvider implements PlacesProvider {
           options?.onEstablishment?.(establishment, establishments.length - 1);
         } catch (error) {
           // Uma ficha que falha não derruba a busca: devolvemos o que deu e
-          // marcamos como parcial. Nunca tela branca (PRD §6.6).
+          // marcamos como parcial. Nunca tela branca.
           partial = true;
           await this.dumpDebug(page, `place-${index}`, error);
         }
@@ -245,7 +245,7 @@ export class GoogleMapsScraperProvider implements PlacesProvider {
    * Interrompe cedo quando o Google serviu CAPTCHA em vez de resultado.
    *
    * Distinguir bloqueio de "layout mudou" importa: bloqueio pede proxy e
-   * espera, layout pede conserto em `selectors.ts` (PRD §8, riscos 1 e 2).
+   * espera, layout pede conserto em `selectors.ts`.
    */
   private async assertNotBlocked(page: Page): Promise<void> {
     if (await page.locator(SELECTORS.blocked).count()) {

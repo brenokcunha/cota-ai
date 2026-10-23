@@ -1,5 +1,5 @@
 /**
- * Smoke test do fluxo inteiro, RF-01 a RF-08.
+ * Smoke test do fluxo inteiro.
  *
  * Dirige a aplicação de verdade num browser de verdade — é o que garante que
  * as oito RFs funcionam juntas, e não só cada uma no seu canto. Enquanto o
@@ -64,8 +64,8 @@ const page = await context.newPage();
 page.setDefaultTimeout(90_000);
 
 try {
-  // ---- RF-01: busca -------------------------------------------------------
-  secao("RF-01 — busca");
+  // ---- busca -------------------------------------------------------
+  secao("Busca");
   await page.goto(BASE);
   await page.getByLabel("O que você procura").selectOption(CATEGORIA);
   await page.getByLabel("Cidade ou bairro").fill(REGIAO);
@@ -81,8 +81,8 @@ try {
   check("respeita o teto pedido", total <= 10, `${total} <= 10`);
   await shot(page, "busca");
 
-  // ---- RF-01: categorias --------------------------------------------------
-  secao("RF-01 — lista de categorias");
+  // ---- categorias --------------------------------------------------
+  secao("Lista de categorias");
   const grupos = await page.locator("#categoria optgroup").count();
   const opcoes = await page.locator("#categoria option").count();
   check("a categoria virou lista agrupada", grupos >= 5, `${grupos} grupos, ${opcoes} opções`);
@@ -100,8 +100,8 @@ try {
   await page.getByLabel("O que você procura").selectOption(CATEGORIA);
   check("voltar para a lista esconde o campo livre", (await campoLivre.count()) === 0);
 
-  // ---- RF-01: feedback de progresso ---------------------------------------
-  secao("RF-01 — feedback de progresso");
+  // ---- feedback de progresso ---------------------------------------
+  secao("Feedback de progresso");
   const eventos = await page.evaluate(async (url) => {
     const response = await fetch(url, { headers: { accept: "application/x-ndjson" } });
     const texto = await response.text();
@@ -126,8 +126,8 @@ try {
     `total=${comTotal?.total}`,
   );
 
-  // ---- RF-01: autocomplete de região --------------------------------------
-  secao("RF-01 — autocomplete de região (base própria + IBGE)");
+  // ---- autocomplete de região --------------------------------------
+  secao("Autocomplete de região (base própria + IBGE)");
   const sugestoes = await page.evaluate(async () => {
     const r = await fetch("/api/regions?q=mo");
     return (await r.json()).regions;
@@ -164,8 +164,8 @@ try {
   );
   check("não repete a mesma região com e sem acento", semRepetir.size === distritos.length);
 
-  // ---- RF-01: mapa acompanha a região digitada ----------------------------
-  secao("RF-01 — o mapa segue a região digitada");
+  // ---- mapa acompanha a região digitada ----------------------------
+  secao("O mapa segue a região digitada");
   const local = await page.evaluate(async () => {
     const r = await fetch("/api/geocode?q=" + encodeURIComponent("Caraíva, Porto Seguro BA"));
     return (await r.json()).result;
@@ -182,8 +182,8 @@ try {
   });
   check("região sem coordenada devolve null, não erro", inexistente === null);
 
-  // ---- RF-01: busca por ponto e raio --------------------------------------
-  secao("RF-01 — busca por ponto e raio");
+  // ---- busca por ponto e raio --------------------------------------
+  secao("Busca por ponto e raio");
   const porRaio = await page.evaluate(async (c) => {
     const r = await fetch(
       `/api/search?categoria=floricultura&lat=${c.lat}&lng=${c.lng}&raio=${c.raio}&limite=6`,
@@ -226,8 +226,8 @@ try {
   await radioRegiao.check();
   await shot(page, "mapa");
 
-  // ---- RF-02: dados de contato -------------------------------------------
-  secao("RF-02 — dados de contato");
+  // ---- dados de contato -------------------------------------------
+  secao("Dados de contato");
   const texto = await cards.first().innerText();
   check("mostra telefone formatado", /\(\d{2}\)\s?\d{4,5}-\d{4}/.test(texto));
   check("mostra nota e avaliações", /★\s?\d,\d/.test(texto));
@@ -236,8 +236,8 @@ try {
     /Provável WhatsApp|Parece fixo|WhatsApp incerto|Sem telefone/.test(texto),
   );
 
-  // ---- RF-03: ordenação e filtro -----------------------------------------
-  secao("RF-03 — ordenação e filtro");
+  // ---- ordenação e filtro -----------------------------------------
+  secao("Ordenação e filtro");
   const nomesRelevancia = await cards.locator("span.font-medium").allInnerTexts();
   await page.getByLabel("Ordenar por").selectOption("nota");
   const nomesNota = await cards.locator("span.font-medium").allInnerTexts();
@@ -250,8 +250,8 @@ try {
   await page.getByLabel("Ordenar por").selectOption("relevancia");
   await shot(page, "ordenacao-filtro");
 
-  // ---- RF-04: seleção múltipla -------------------------------------------
-  secao("RF-04 — seleção múltipla");
+  // ---- seleção múltipla -------------------------------------------
+  secao("Seleção múltipla");
   await page.getByRole("button", { name: "Selecionar todos" }).click();
   const contador = page.getByText(/\d+ selecionados?/);
   const selecionados = Number((await contador.innerText()).match(/\d+/)[0]);
@@ -264,15 +264,15 @@ try {
   await page.getByRole("button", { name: "Selecionar todos" }).click();
   await shot(page, "selecao");
 
-  // ---- RF-07: persistência ------------------------------------------------
-  secao("RF-07 — persistência local");
+  // ---- persistência ------------------------------------------------
+  secao("Persistência local");
   await page.reload();
   await page.getByText(/de \d+ na lista/).waitFor();
   const depoisDoReload = Number((await contador.innerText()).match(/\d+/)[0]);
   check("seleção sobrevive ao refresh", depoisDoReload > 0, `${depoisDoReload} ainda marcados`);
 
-  // ---- RF-05: composição da mensagem -------------------------------------
-  secao("RF-05 — composição da mensagem");
+  // ---- composição da mensagem -------------------------------------
+  secao("Composição da mensagem");
   await page.getByRole("link", { name: /Escrever mensagem/ }).click();
   await page.getByRole("button", { name: "Produto" }).click();
 
@@ -284,8 +284,8 @@ try {
   check("a prévia aplica os campos livres", previaTexto.includes("100 rosas vermelhas"));
   await shot(page, "mensagem");
 
-  // ---- RF-06: disparo sequencial -----------------------------------------
-  secao("RF-06 — disparo sequencial");
+  // ---- disparo sequencial -----------------------------------------
+  secao("Disparo sequencial");
   await page.getByRole("link", { name: /Disparar para \d+/ }).click();
   await page.getByRole("progressbar").waitFor();
 
@@ -318,8 +318,8 @@ try {
   await popup2.close();
   await shot(page, "disparo-progresso");
 
-  // ---- RF-08: link de retomada -------------------------------------------
-  secao("RF-08 — link de retomada");
+  // ---- link de retomada -------------------------------------------
+  secao("Link de retomada");
   await page.getByRole("button", { name: "Gerar link" }).click();
   const campoLink = page.getByLabel("Link de retomada");
   await campoLink.waitFor();

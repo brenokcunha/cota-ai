@@ -10,7 +10,7 @@ import { renderMessageFor } from "@/lib/whatsapp";
 import { useQuote } from "./quote-provider";
 
 /**
- * RF-05 — a mensagem e suas variáveis.
+ * A mensagem e suas variáveis.
  *
  * Os campos livres não são cadastrados numa tela à parte: escrever `{{data}}`
  * no texto já cria o campo. Assim a variável e o lugar onde ela aparece são a

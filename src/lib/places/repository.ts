@@ -4,7 +4,7 @@ import type { QueryResultRow } from "pg";
 import type { Establishment, EstablishmentSource, SearchQuery, WhatsappConfidence } from "./types";
 
 /**
- * Persistência de estabelecimentos e do cache de buscas (PRD §6.3).
+ * Persistência de estabelecimentos e do cache de buscas.
  *
  * O efeito colateral que interessa: a base própria — o ativo monetizável da
  * fase 3 — se constrói sozinha conforme as pessoas buscam, sem crawler

@@ -4,7 +4,7 @@ import type { SearchQuery } from "../types";
 /**
  * Todo o acoplamento com o HTML do Google Maps mora neste arquivo.
  *
- * O risco #2 do PRD é o Google mudar o layout. A mitigação é esta: quando
+ * O risco #2 do projeto é o Google mudar o layout. A mitigação é esta: quando
  * quebrar, o conserto é aqui e em nenhum outro lugar. Por isso preferimos
  * seletores semânticos (role, aria-label, data-item-id) às classes ofuscadas
  * do tipo `.F7nice`, que mudam a cada deploy do Google.

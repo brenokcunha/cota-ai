@@ -3,8 +3,8 @@ import type { Establishment } from "../places/types";
 /**
  * A cotação: a lista escolhida, a mensagem, e onde o disparo parou.
  *
- * Vive no `localStorage` do navegador (RF-07) e só vai para o banco quando o
- * usuário pede o link de retomada (RF-08). Não há login: o `shareToken` é a
+ * Vive no `localStorage` do navegador e só vai para o banco quando o
+ * usuário pede o link de retomada. Não há login: o `shareToken` é a
  * única chave de volta.
  */
 

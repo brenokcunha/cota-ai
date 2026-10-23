@@ -1,10 +1,10 @@
 import { INITIAL_STATE, type QuoteState } from "./state";
 
 /**
- * RF-07 — a cotação sobrevive a refresh e a fechar a aba.
+ * A cotação sobrevive a refresh e a fechar a aba.
  *
  * Sem login, `localStorage` é a única memória que existe. Quem quiser levar a
- * cotação para outro aparelho usa o link de retomada (RF-08).
+ * cotação para outro aparelho usa o link de retomada.
  */
 
 const KEY = "cota-ai:quote:v1";

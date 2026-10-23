@@ -1,5 +1,5 @@
 /**
- * Categorias de estabelecimento oferecidas na busca (RF-01).
+ * Categorias de estabelecimento oferecidas na busca.
  *
  * Derivadas da taxonomia oficial do Google Places (a tabela de `place types`,
  * 507 tipos), mas nem traduzidas nem copiadas ao pé da letra:

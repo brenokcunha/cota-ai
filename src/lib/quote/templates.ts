@@ -1,5 +1,5 @@
 /**
- * RF-05 — templates prontos por categoria.
+ * Templates prontos por categoria.
  *
  * Todos seguem a mesma forma: quem escreve se identifica, diz o que precisa,
  * e faz UMA pergunta objetiva. Mensagem que parece disparo automático não é

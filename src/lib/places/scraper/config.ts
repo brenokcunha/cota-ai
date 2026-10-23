@@ -1,7 +1,7 @@
 /**
  * Leitura das variáveis de ambiente do scraper, em um lugar só.
  *
- * Os defaults são deliberadamente comedidos: o risco #1 do PRD é justamente
+ * Os defaults são deliberadamente comedidos: o risco #1 do projeto é justamente
  * o scraping, e um scraper agressivo é o jeito mais rápido de tomar bloqueio
  * de IP. Quem quiser ir mais rápido muda a variável e assume o risco.
  */
@@ -10,7 +10,7 @@ export interface ScraperConfig {
   headless: boolean;
   /** Timeout de cada navegação/espera, em ms. */
   timeoutMs: number;
-  /** Pausa entre visitas a fichas. É o rate limiting do PRD §8, risco 1. */
+  /** Pausa entre visitas a fichas. É o rate limiting da coleta. */
   delayMs: number;
   /**
    * Teto absoluto de resultados por busca.
@@ -20,7 +20,7 @@ export interface ScraperConfig {
    * devolver menos do que foi pedido, sem dizer por quê.
    */
   maxResults: number;
-  /** Proxy opcional (`http://user:pass@host:porta`). Ver PRD §10. */
+  /** Proxy opcional (`http://user:pass@host:porta`). */
   proxyUrl: string | null;
   locale: string;
   timezone: string;

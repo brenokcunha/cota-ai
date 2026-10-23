@@ -4,8 +4,8 @@ import type { WhatsappConfidence } from "./places/types";
  * Normalização de telefone brasileiro e heurística de WhatsApp.
  *
  * A heurística é deliberadamente conservadora: quando não dá para afirmar,
- * devolvemos "unknown" em vez de "likely". O PRD (§8, risco 3) é explícito —
- * o produto indica, nunca promete, que o número atende no WhatsApp.
+ * devolvemos "unknown" em vez de "likely". O produto indica, nunca promete,
+ * que o número atende no WhatsApp.
  */
 
 const BR_COUNTRY_CODE = "55";
@@ -67,7 +67,7 @@ export function toE164(raw: string | null | undefined): string | null {
  * Celular no Brasil tem 9 dígitos e começa com 9; fixo tem 8 e começa com 2-5.
  * Isso erra em dois sentidos — fixo com WhatsApp Business existe, e celular
  * sem WhatsApp também — por isso "likely"/"unlikely" e nunca um booleano.
- * Checagem ativa contra o WhatsApp fica para depois (PRD §10).
+ * Checagem ativa contra o WhatsApp fica para depois.
  */
 export function guessWhatsapp(e164: string | null): WhatsappConfidence {
   if (!e164) return "unknown";

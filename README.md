@@ -69,25 +69,25 @@ reinstala sozinho na próxima subida.
 docker compose exec web node scripts/smoke.mjs
 ```
 
-Dirige a aplicação num browser de verdade e confere as oito RFs de ponta a ponta —
+Dirige a aplicação num browser de verdade e confere o fluxo de ponta a ponta —
 busca, filtro, seleção, mensagem, disparo, persistência e link de retomada. Screenshots
 de cada passo ficam em `.smoke/`.
 
 ## O fluxo
 
-| Tela | RFs | O que faz |
-| --- | --- | --- |
-| `/` | RF-01 a RF-04, RF-07 | Busca por região (com autocomplete) ou por ponto e raio no mapa — os dois visíveis juntos, um rádio escolhe qual vale. Barra de progresso, lista com telefone e nota, ordenação, filtro de WhatsApp, seleção múltipla |
-| `/mensagem` | RF-05 | Modelos por categoria, variáveis e prévia com um estabelecimento real |
-| `/enviar` | RF-06, RF-08 | Disparo um a um pelo `wa.me`, com pular/desfazer, e o link de retomada |
-| `/c/[token]` | RF-08 | Abre uma cotação salva em outro aparelho |
+| Tela | O que faz |
+| --- | --- |
+| `/` | Busca por região (com autocomplete) ou por ponto e raio no mapa — os dois visíveis juntos, um rádio escolhe qual vale. Barra de progresso, lista com telefone e nota, ordenação, filtro de WhatsApp, seleção múltipla |
+| `/mensagem` | Modelos por categoria, variáveis e prévia com um estabelecimento real |
+| `/enviar` | Disparo um a um pelo `wa.me`, com pular/desfazer, e o link de retomada |
+| `/c/[token]` | Abre uma cotação salva em outro aparelho |
 
-A cotação inteira vive no `localStorage` (RF-07) e só vai para o banco quando o usuário
+A cotação inteira vive no `localStorage` e só vai para o banco quando o usuário
 pede o link de retomada.
 
 ## API
 
-### `GET /api/search` — RF-01
+### `GET /api/search`
 
 Duas formas de dizer onde procurar. Por texto:
 
@@ -151,7 +151,7 @@ As categorias que o scraper já coletou **não** entram como sugestão. O Google
 `Hotel 2 estrelas` na ficha, mas quem busca por isso acha menos que quem busca
 `pousada` — o vocabulário que se reporta e o que se pesquisa são diferentes.
 
-### `GET /api/regions?q=` — RF-01
+### `GET /api/regions?q=`
 
 Sugestões de região, de três fontes com vagas próprias (3 + 3 + 3):
 
@@ -175,7 +175,7 @@ gravada no arquivo, então a consulta é uma varredura simples.
 
 Para atualizar (municípios, distritos e população): `node scripts/build-ibge-regions.mjs`.
 
-### `GET /api/geocode?q=` — RF-01
+### `GET /api/geocode?q=`
 
 Onde fica a região digitada, para o mapa se posicionar nela **antes** da busca. Não
 define a área da busca: quem faz isso é o clique no mapa.
@@ -191,7 +191,7 @@ O resultado é cacheado no Postgres **para sempre**: a coordenada de Caraíva n�
 assim o serviço externo é chamado uma vez por região distinta. Para volume de produto,
 `NOMINATIM_URL` aponta para uma instância própria ou comercial sem tocar em mais nada.
 
-### `POST /api/quotes` e `GET /api/quotes/{token}` — RF-08
+### `POST /api/quotes` e `GET /api/quotes/{token}`
 
 Gravam e leem a cotação anônima. Mandar `shareToken` no `POST` atualiza a existente, que
 é como o progresso do disparo acompanha o link.
@@ -199,9 +199,8 @@ Gravam e leem a cotação anônima. Mandar `shareToken` no `POST` atualiza a exi
 ## Estrutura
 
 ```
-docs/PRD.md                            Documento de produto — leia antes de mexer no escopo
 db/migrations/                         Schema em SQL, aplicado na subida do servidor
-scripts/smoke.mjs                      Teste de ponta a ponta das oito RFs
+scripts/smoke.mjs                      Teste de ponta a ponta do fluxo inteiro      
 scripts/build-ibge-regions.mjs         Regera a lista de municipios do IBGE
 
 src/app/                               Telas e rotas (App Router)
@@ -237,11 +236,11 @@ Roda como container único no **Fly.io**. A escolha entre Fly, Railway e Render 
 um motivo específico deste produto: **só o Fly tem região no Brasil** (`gru`, São Paulo).
 Isso pesa duas vezes aqui — latência para o usuário, e um IP brasileiro raspando o
 Google Maps brasileiro. De um datacenter americano o Google tende a servir muro de
-consentimento e resultados enviesados, que é o risco #1 do PRD.
+consentimento e resultados enviesados, que é o risco #1 do projeto.
 
 > **Por que não Vercel:** o scraper carrega 1,3 GB de Chromium e uma busca leva de 40s a
 > 2min. Os limites de função da Vercel são 250 MB e 60s (300s no Pro). Não é questão de
-> configuração — não cabe. O PRD §6.4 já previa isso e desenha um worker separado; até
+> configuração — não cabe. O caminho previsto é um worker separado para o scraper; até
 > ele existir, o app inteiro roda num container só.
 
 ```bash
@@ -288,8 +287,6 @@ segue `import`, e o Playwright lê arquivos de dados que ninguém importa
 (`browsers.json`, o binário do driver). Sem o `outputFileTracingIncludes` do
 `next.config.ts`, a imagem sobe normalmente e só quebra na primeira busca.
 
-## Documentação
+## Licença
 
-- [PRD](docs/PRD.md) — problema, escopo do MVP, decisões técnicas, monetização e riscos.
-- [Retomada](docs/RETOMADA.md) — onde o projeto parou, o que falta e as armadilhas
-  conhecidas. Comece por aqui se estiver voltando ao projeto depois de um tempo.
+[MIT](LICENSE)

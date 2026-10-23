@@ -5,7 +5,7 @@ import { findEstablishmentsByPlaceIds, upsertEstablishments } from "../places/re
 import type { Quote, QuoteInput, QuoteTarget, TargetStatus } from "./types";
 
 /**
- * Gravação e leitura da cotação anônima (PRD §6.5, RF-08).
+ * Gravação e leitura da cotação anônima.
  *
  * Os estabelecimentos são gravados junto: um link de retomada aberto daqui a
  * três dias em outro aparelho precisa dos telefones, e o cache da busca pode
@@ -16,7 +16,7 @@ import type { Quote, QuoteInput, QuoteTarget, TargetStatus } from "./types";
  * 9 bytes = 12 caracteres em base64url.
  *
  * O token é a única proteção da cotação — quem tem o link vê a lista e a
- * mensagem. Não há dado pessoal ali (PRD §6.6, LGPD), mas 72 bits de entropia
+ * mensagem. Não há dado pessoal ali (LGPD), mas 72 bits de entropia
  * tornam adivinhar inviável de qualquer forma.
  */
 function newShareToken(): string {

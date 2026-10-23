@@ -36,8 +36,13 @@ services:
       POSTGRES_DB: cotaai
     # Exposto para inspecionar com psql/DBeaver do host. Porta alta de propósito,
     # para não brigar com um Postgres local na 5432.
+    #
+    # O `127.0.0.1` importa: sem ele o Docker publica em 0.0.0.0 e o banco fica
+    # visível para toda a rede local, com as credenciais fracas daqui. Em casa é
+    # pouco; num coworking ou café é o banco inteiro aberto. Ligado a localhost,
+    # o acesso do host continua funcionando igual.
     ports:
-      - "${DB_PORT:-55432}:5432"
+      - "127.0.0.1:${DB_PORT:-55432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     # O web só sobe depois que o banco aceita conexão — senão a migration da

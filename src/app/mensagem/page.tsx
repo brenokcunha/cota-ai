@@ -3,7 +3,7 @@
 import { MessageEditor } from "@/components/message-editor";
 import { useQuote } from "@/components/quote-provider";
 
-/** Etapa 2: escrever a mensagem (RF-05). */
+/** Etapa 2: escrever a mensagem. */
 export default function MensagemPage() {
   const { state } = useQuote();
 

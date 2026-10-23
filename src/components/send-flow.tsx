@@ -12,10 +12,10 @@ import { useQuote } from "./quote-provider";
 import { ShareLink } from "./share-link";
 
 /**
- * RF-06 — o disparo, um estabelecimento por vez.
+ * O disparo, um estabelecimento por vez.
  *
  * Cada botão abre o WhatsApp do usuário com a mensagem pronta; quem aperta
- * "enviar" é ele, sempre (PRD §6.1). Não dá para saber, do lado de cá, se o
+ * "enviar" é ele, sempre. Não dá para saber, do lado de cá, se o
  * envio aconteceu de fato — então marcamos ao abrir e deixamos desfazer, que
  * erra a favor de não perder o lugar na fila.
  */
@@ -52,7 +52,7 @@ export function SendFlow() {
   );
 
   // Ao chegar na tela, o foco vai para o primeiro pendente: quem retoma uma
-  // cotação continua de onde parou sem procurar na lista (PRD §6.6).
+  // cotação continua de onde parou sem procurar na lista.
   useEffect(() => {
     if (current) buttonRefs.current.get(current.establishment.placeId)?.focus();
     // Só na montagem: refocar a cada mudança roubaria o foco de quem navega.

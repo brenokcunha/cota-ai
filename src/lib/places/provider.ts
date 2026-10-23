@@ -3,7 +3,7 @@ import type { Establishment, SearchQuery, SearchResult } from "./types";
 /**
  * Fonte de estabelecimentos.
  *
- * O MVP usa scraping do Google Maps, que é o risco #1 do projeto (PRD §8).
+ * O MVP usa scraping do Google Maps, que é o risco #1 do projeto.
  * Toda a aplicação fala com esta interface e nunca com o scraper direto, para
  * que trocar de fonte custe uma variável de ambiente e não uma refatoração.
  */
@@ -33,7 +33,7 @@ export interface SearchOptions {
    * Chamado assim que cada ficha fica pronta.
    *
    * É o que permite a tela mostrar resultado enquanto a coleta continua: uma
-   * busca nova leva dezenas de segundos, e o PRD §6.6 pede feedback de
+   * busca nova leva dezenas de segundos, e o produto deve dar feedback de
    * progresso em vez de uma espera cega.
    */
   onEstablishment?(establishment: Establishment, index: number): void;
@@ -45,7 +45,7 @@ export type PlacesProviderId = "scraper" | "places-api" | "own-db";
 
 /**
  * Resolve o provider ativo a partir de PLACES_PROVIDER, com o cache por cima
- * quando há banco configurado (PRD §6.3).
+ * quando há banco configurado.
  *
  * Imports dinâmicos de propósito: o scraper carrega Playwright e o cache
  * carrega `pg`, e nenhum dos dois deve entrar no bundle de quem não usa.
@@ -70,7 +70,7 @@ async function getSourceProvider(): Promise<PlacesProvider> {
     }
     case "places-api":
     case "own-db":
-      throw new Error(`Provider "${id}" ainda não implementado (PRD §6.2, fases 2-3).`);
+      throw new Error(`Provider "${id}" ainda não implementado.`);
     default:
       throw new Error(`PLACES_PROVIDER desconhecido: "${id}".`);
   }

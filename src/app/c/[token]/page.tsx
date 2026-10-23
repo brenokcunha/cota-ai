@@ -5,7 +5,7 @@ import { hasDatabase } from "@/lib/db/pool";
 import { findQuote } from "@/lib/quote/repository";
 
 /**
- * RF-08 — abre uma cotação a partir do link de retomada.
+ * Abre uma cotação a partir do link de retomada.
  *
  * A leitura acontece no servidor: sem chamada HTTP extra, e o conteúdo já vem
  * no HTML, então o link funciona mesmo em conexão ruim.

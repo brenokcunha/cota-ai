@@ -14,9 +14,8 @@ import type { SearchCenter } from "@/lib/places/types";
  * um raio de 3 km em volta de onde a pessoa vai ficar. A busca por texto
  * continua ali do lado, intacta; isto é uma segunda porta, não uma troca.
  *
- * Tiles do OpenStreetMap: sem chave de API e sem cadastro de cobrança. Em
- * produção com volume real, o caminho é um provedor de tiles (MapTiler, Carto)
- * — a política de uso dos tiles públicos do OSM não cobre tráfego de produto.
+ * Tiles do OpenStreetMap: sem chave de API e sem cadastro de cobrança. A
+ * política de uso dos tiles públicos cobre uso pessoal, não volume.
  */
 
 /** Centro do Brasil, para quando não há nada melhor. */

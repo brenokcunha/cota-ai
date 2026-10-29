@@ -5,7 +5,7 @@ estabelecimentos (raspados do Google Maps), ele seleciona, escreve uma mensagem 
 um a um pelo `wa.me`. O app **nunca dispara mensagem sozinho** — só monta o link; quem
 confirma o envio é a pessoa. Não mude isso.
 
-O README tem arquitetura, API, deploy e variáveis. Este arquivo cobre só o que não se
+O README tem arquitetura, API, migrations e variáveis. Este arquivo cobre só o que não se
 descobre lendo o código.
 
 ## Comandos
@@ -44,8 +44,8 @@ descobre lendo o código.
   corrige sozinho.
 - O app funciona sem `DATABASE_URL`: busca ao vivo, sem cache e sem link de retomada.
   Todo código que usa o banco precisa tolerar essa ausência (ver `src/lib/db/pool.ts`).
-- Migrations não rodam na subida do servidor web, de propósito: entrypoint do container
-  (local) e `release_command` do Fly (produção).
+- Migrations não rodam na subida do servidor web, de propósito: rodam no entrypoint do
+  container (`docker/dev-entrypoint.sh`).
 
 ## Convenções
 
@@ -67,15 +67,12 @@ já apareceram aqui:
 
 - `params` é uma `Promise`: `const { token } = await params`.
 - Os tipos `PageProps<"/rota">` e `RouteContext<"/rota">` são globais, sem import.
-- `next.config.ts` usa `output: "standalone"` (imagem de produção) e
-  `outputFileTracingIncludes` para os arquivos de dados do Playwright; sem isso a imagem
-  sobe e só quebra na primeira busca.
 
 ## Armadilhas conhecidas
 
-- Os tiles do mapa vêm do OpenStreetMap público e o Nominatim limita a 1 req/s: ambos são
-  só para desenvolvimento. Antes de ter volume, troque por provedores próprios
-  (`src/components/map-picker.tsx`, `NOMINATIM_URL`).
-- Não dá para rodar na Vercel: 1,3 GB de Chromium e buscas de 40 s a 2 min estouram os
-  limites de função. O deploy é um container único no Fly.io (região `gru`).
+- Os tiles do mapa vêm do OpenStreetMap público e o Nominatim limita a 1 req/s: ambos
+  servem para uso pessoal, não para volume (`src/components/map-picker.tsx`,
+  `NOMINATIM_URL`).
+- O projeto roda só localmente, em container (`docker compose`). Não há deploy nem imagem
+  de produção; não dá para rodar na Vercel (1,3 GB de Chromium, buscas de 40 s a 2 min).
 - Mudou o `package-lock.json`? O container reinstala sozinho na próxima subida.

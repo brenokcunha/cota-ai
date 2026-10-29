@@ -24,6 +24,13 @@ WhatsApp com ela pronta — você confirma cada envio. Isso mantém o produto de
 Termos do WhatsApp e faz as respostas chegarem direto no seu WhatsApp, onde você quer
 negociar.
 
+## Segurança
+
+Projeto de uso pessoal, feito para rodar **só na sua máquina**. Não tem autenticação,
+HTTPS nem hardening de produção, e as credenciais do `compose.yaml` (`cotaai:cotaai`)
+são de laboratório. Não o publique em servidor aberto à internet sem antes resolver isso.
+Para reportar uma falha, veja [SECURITY.md](SECURITY.md).
+
 ## Stack
 
 - **Next.js 15** (App Router) + TypeScript + Tailwind
@@ -40,7 +47,10 @@ a aplicação e um Postgres, e as migrations rodam sozinhas na subida.
 docker compose up --build
 ```
 
-Abre em http://localhost:3000. Se a porta já estiver ocupada por outro projeto:
+Abre em http://localhost:3000. A porta fica presa a `127.0.0.1`: o app não tem login e
+cada busca sobe um Chromium, então ele não deve ser exposto à rede.
+
+Se a porta já estiver ocupada por outro projeto:
 
 ```bash
 WEB_PORT=3001 DB_PORT=55433 docker compose up --build
@@ -59,9 +69,8 @@ Mudou o `package.json`? Não precisa fazer nada: o container detecta o lock novo
 reinstala sozinho na próxima subida.
 
 > **Mapa:** os tiles vêm do OpenStreetMap, sem chave de API e sem cadastro de cobrança.
-> A política de uso dos tiles públicos do OSM não cobre tráfego de produto — antes de
-> ir para produção com volume real, troque por um provedor de tiles (MapTiler, Carto)
-> em `src/components/map-picker.tsx`.
+> A política de uso dos tiles públicos do OSM cobre uso pessoal, mas não volume: se o
+> uso crescer, troque por um provedor de tiles em `src/components/map-picker.tsx`.
 
 ### Verificando que está tudo de pé
 
@@ -230,62 +239,16 @@ Três lugares valem a atenção de quem for mexer:
 - A cotação é um objeto serializável só. É isso que faz ela caber no `localStorage` e
   virar link de retomada sem código extra.
 
-## Deploy
-
-Roda como container único no **Fly.io**. A escolha entre Fly, Railway e Render foi por
-um motivo específico deste produto: **só o Fly tem região no Brasil** (`gru`, São Paulo).
-Isso pesa duas vezes aqui — latência para o usuário, e um IP brasileiro raspando o
-Google Maps brasileiro. De um datacenter americano o Google tende a servir muro de
-consentimento e resultados enviesados, que é o risco #1 do projeto.
-
-> **Por que não Vercel:** o scraper carrega 1,3 GB de Chromium e uma busca leva de 40s a
-> 2min. Os limites de função da Vercel são 250 MB e 60s (300s no Pro). Não é questão de
-> configuração — não cabe. O caminho previsto é um worker separado para o scraper; até
-> ele existir, o app inteiro roda num container só.
-
-```bash
-fly launch --no-deploy --copy-config
-fly postgres create --region gru
-fly secrets set DATABASE_URL="postgres://…"
-fly deploy
-```
-
-O `fly.toml` versionado já traz o essencial: região `gru`, 2 GB de RAM com swap (o
-Chromium tem picos ao abrir aba), limite de 6 buscas simultâneas (cada uma segura um
-Chromium inteiro), e `release_command` aplicando as migrations **antes** da nova versão
-receber tráfego.
-
-### Migrations
-
-Um caminho só, local e em produção:
+## Migrations
 
 ```bash
 npm run migrate      # ou: node scripts/migrate.mjs
 ```
 
-Localmente o entrypoint do container roda isso antes do `next dev`; no Fly, o
-`release_command`. Não rodam mais na subida do servidor: num deploy com mais de uma
-instância, a primeira a subir migraria o banco enquanto as outras ainda servem o código
-antigo.
+O entrypoint do container roda isso antes do `next dev`. Não rodam na subida do
+servidor web: é um caminho só, e o schema não muda por baixo de quem está usando.
 
-### Variáveis em produção
-
-| Variável | Obrigatória | Observação |
-| --- | --- | --- |
-| `DATABASE_URL` | sim | Use a connection string **pooled** se o provedor oferecer |
-| `PLACES_PROVIDER` | não | `scraper` é o padrão |
-| `NOMINATIM_URL` | não | Aponte para provedor próprio antes de ter volume |
-| `SCRAPER_PROXY_URL` | não | Se o Google começar a apresentar CAPTCHA |
-
-### A imagem
-
-`docker build --target runner -t cota-ai:prod .` — 2,5 GB, quase tudo Chromium. Usa a
-saída `standalone` do Next e roda como usuário não-root.
-
-Um detalhe que custou uma depuração: o rastreamento de dependências do `standalone`
-segue `import`, e o Playwright lê arquivos de dados que ninguém importa
-(`browsers.json`, o binário do driver). Sem o `outputFileTracingIncludes` do
-`next.config.ts`, a imagem sobe normalmente e só quebra na primeira busca.
+O cota-ai roda só localmente, via `docker compose`. Não há deploy nem imagem de produção.
 
 ## Licença
 

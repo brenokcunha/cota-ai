@@ -71,6 +71,11 @@ function parseEstablishment(raw: unknown): Establishment {
   };
 }
 
+/** O formato que `newShareToken` gera (base64url); qualquer outra coisa é descartada. */
+function parseShareToken(value: unknown): string | null {
+  return typeof value === "string" && /^[A-Za-z0-9_-]{12}$/.test(value) ? value : null;
+}
+
 function parseDate(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const date = new Date(value);
@@ -113,7 +118,7 @@ export function parseQuoteInput(raw: unknown): QuoteInput {
   }
 
   return {
-    shareToken: nullableStr(body.shareToken, 40),
+    shareToken: parseShareToken(body.shareToken),
     category: str(body.category, "category", { max: 120 }),
     region: str(body.region, "region", { max: 200 }),
     template: typeof body.template === "string" ? body.template.slice(0, MAX_TEMPLATE_CHARS) : "",

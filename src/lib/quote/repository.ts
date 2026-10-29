@@ -32,12 +32,20 @@ export async function saveQuote(input: QuoteInput): Promise<string> {
     // que nenhuma, porque o usuário confiaria no link.
     await client.query("BEGIN");
 
+    // `overwrite: false`: estes dados vêm do navegador, então não podem
+    // reescrever uma ficha que a coleta já gravou.
     const establishmentIds = await upsertEstablishments(
       input.targets.map((t) => t.establishment),
       client,
+      { overwrite: false },
     );
 
-    const token = input.shareToken || newShareToken();
+    // Token que o servidor não conhece não é aceito: se o cliente pudesse
+    // escolher o token de uma cotação nova, escolheria um fácil de adivinhar.
+    const known = input.shareToken
+      ? await client.query("SELECT 1 FROM quotes WHERE share_token = $1", [input.shareToken])
+      : null;
+    const token = known?.rowCount ? input.shareToken! : newShareToken();
     const quoteRows = await client.query<{ id: string }>(
       `INSERT INTO quotes (share_token, category, region, message_template, variables_json)
        VALUES ($1, $2, $3, $4, $5::jsonb)

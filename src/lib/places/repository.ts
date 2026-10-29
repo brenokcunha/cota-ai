@@ -96,23 +96,26 @@ export interface Queryable {
   ): Promise<{ rows: T[] }>;
 }
 
-/** Grava ou atualiza estabelecimentos, devolvendo o id interno de cada place_id. */
+/**
+ * Grava ou atualiza estabelecimentos, devolvendo o id interno de cada place_id.
+ *
+ * `overwrite: false` serve a dados que vieram do navegador: a ficha nova entra,
+ * mas uma que já existe fica como a coleta a deixou. Sem isso, qualquer um que
+ * poste uma cotação trocaria nome e telefone de um place_id real, e a busca
+ * seguinte serviria o número trocado a todo mundo pelo cache.
+ */
 export async function upsertEstablishments(
   establishments: readonly Establishment[],
   executor: Queryable = getPool(),
+  { overwrite = true }: { overwrite?: boolean } = {},
 ): Promise<Map<string, number>> {
   const ids = new Map<string, number>();
   if (establishments.length === 0) return ids;
 
-  for (const e of establishments) {
-    const { rows } = await executor.query<{ id: string; place_id: string }>(
-      `INSERT INTO establishments (
-         place_id, name, category, address, city, state, lat, lng,
-         phone_e164, whatsapp, rating, reviews_count, source, scraped_at,
-         city_normalized, neighborhood, neighborhood_normalized
-       )
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
-       ON CONFLICT (place_id) DO UPDATE SET
+  // O no-op no lugar do DO NOTHING é de propósito: só o DO UPDATE devolve a
+  // linha existente no RETURNING, e precisamos do id dela.
+  const onConflict = overwrite
+    ? `DO UPDATE SET
          name = EXCLUDED.name,
          category = EXCLUDED.category,
          address = EXCLUDED.address,
@@ -129,7 +132,18 @@ export async function upsertEstablishments(
          city_normalized = EXCLUDED.city_normalized,
          neighborhood = EXCLUDED.neighborhood,
          neighborhood_normalized = EXCLUDED.neighborhood_normalized,
-         updated_at = now()
+         updated_at = now()`
+    : "DO UPDATE SET place_id = establishments.place_id";
+
+  for (const e of establishments) {
+    const { rows } = await executor.query<{ id: string; place_id: string }>(
+      `INSERT INTO establishments (
+         place_id, name, category, address, city, state, lat, lng,
+         phone_e164, whatsapp, rating, reviews_count, source, scraped_at,
+         city_normalized, neighborhood, neighborhood_normalized
+       )
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
+       ON CONFLICT (place_id) ${onConflict}
        RETURNING id, place_id`,
       [
         e.placeId, e.name, e.category, e.address, e.city, e.state, e.lat, e.lng,

@@ -4,10 +4,17 @@ services:
       context: .
       target: dev
     # A porta do host e configuravel: WEB_PORT=3001 docker compose up
+    #
+    # Preso a 127.0.0.1 como o banco: o app nao tem login, e cada busca sobe um
+    # Chromium. Publicado em 0.0.0.0, qualquer aparelho da rede dispara buscas
+    # (e queima o IP no Google) por voce. Para abrir no celular, troque aqui
+    # sabendo disso.
     ports:
-      - "${WEB_PORT:-3000}:3000"
+      - "127.0.0.1:${WEB_PORT:-3000}:3000"
     environment:
       PLACES_PROVIDER: scraper
+      # Credencial de laboratorio: so vale para o Postgres deste compose, que
+      # fica preso a localhost. Nao reutilize em nenhum ambiente real.
       DATABASE_URL: postgres://cotaai:cotaai@db:5432/cotaai
       # Screenshot + HTML de toda ficha que falhar, para consertar seletores.
       SCRAPER_DEBUG_DIR: /app/.scraper-debug

@@ -6,21 +6,31 @@ const nextConfig: NextConfig = {
   // ngrok) serve a pagina mas quebra os assets, com erro que nao menciona
   // origem. So vale em desenvolvimento; producao ignora esta chave.
   allowedDevOrigins: ["*.trycloudflare.com"],
-  // Imagem de producao enxuta: o build gera `.next/standalone` com um server.js
-  // e so as dependencias que o servidor de fato usa, em vez do node_modules
-  // inteiro. Com o Chromium ja pesando 1,3GB, cada camada evitavel conta.
-  output: "standalone",
-
   // Playwright localiza o driver e os browsers por caminho no disco. Se o
   // bundler empacotar o pacote, essa resolução quebra em runtime.
   serverExternalPackages: ["playwright", "playwright-core"],
 
-  // O rastreamento de dependências do build standalone segue `import`, e o
-  // Playwright lê arquivos de dados que ninguém importa — `browsers.json`, o
-  // binário do driver. Sem isto, a imagem de produção sobe e só quebra na
-  // primeira busca, com um "Cannot find module browsers.json".
-  outputFileTracingIncludes: {
-    "/api/search": ["./node_modules/playwright-core/**/*", "./node_modules/playwright/**/*"],
+  // Cabeçalhos de defesa em profundidade. Sem CSP de scripts de propósito: o
+  // Next injeta scripts inline e uma política restrita exigiria nonce por
+  // requisição; o que entra aqui não quebra nada e fecha clickjacking e
+  // sniffing de tipo.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // `geolocation` fica liberado: o mapa usa "minha localização".
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self)" },
+          {
+            key: "Content-Security-Policy",
+            value: "frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'",
+          },
+        ],
+      },
+    ];
   },
 };
 

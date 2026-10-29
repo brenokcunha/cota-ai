@@ -1,5 +1,6 @@
 import { PlacesBlockedError, PlacesUnavailableError } from "@/lib/places/errors";
 import { getPlacesProvider } from "@/lib/places/provider";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 import type { SearchCenter, SearchQuery } from "@/lib/places/types";
 
 /**
@@ -31,6 +32,10 @@ const MAX_RADIUS_KM = 50;
 const DEFAULT_RADIUS_KM = 5;
 
 export async function GET(request: Request) {
+  // Cada busca nova sobe um Chromium; o teto protege a máquina e o IP.
+  const wait = rateLimit(request, "search", { limit: 12, windowMs: 60_000 });
+  if (wait !== null) return tooManyRequests(wait);
+
   const params = new URL(request.url).searchParams;
   const category = params.get("categoria")?.trim();
 

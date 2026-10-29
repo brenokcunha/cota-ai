@@ -3,13 +3,8 @@
  *
  *   node scripts/migrate.mjs
  *
- * É o único lugar que aplica schema. Roda antes do servidor subir: local, pelo
- * entrypoint do container; em produção, pelo `release_command` do Fly, que
- * executa antes da nova versão receber tráfego.
- *
- * Rodar isso de dentro do servidor web parecia prático e não é: num deploy com
- * mais de uma instância, a que subir primeiro aplicaria o schema enquanto as
- * outras ainda servem o código antigo.
+ * É o único lugar que aplica schema. Roda antes do servidor subir, pelo
+ * entrypoint do container.
  */
 
 import { readFile, readdir } from "node:fs/promises";
@@ -18,7 +13,7 @@ import pg from "pg";
 
 const MIGRATIONS_DIR = join(process.cwd(), "db", "migrations");
 
-/** Trava do Postgres para dois deploys simultâneos não aplicarem duas vezes. */
+/** Trava do Postgres para duas execuções simultâneas não aplicarem duas vezes. */
 const LOCK_KEY = 4_820_113;
 
 if (!process.env.DATABASE_URL) {

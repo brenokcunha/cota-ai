@@ -3,7 +3,7 @@
  *
  * Dirige a aplicação de verdade num browser de verdade — é o que garante que
  * as oito RFs funcionam juntas, e não só cada uma no seu canto. Enquanto o
- * projeto não tiver suíte de testes, é isto que roda antes de um deploy.
+ * projeto não tiver suíte de testes, é isto que roda antes de uma entrega.
  *
  *   docker compose exec web node scripts/smoke.mjs
  *

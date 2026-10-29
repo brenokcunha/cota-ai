@@ -16,7 +16,7 @@ if [ ! -f "$STAMP" ] || ! cmp -s package-lock.json "$STAMP"; then
   cp package-lock.json "$STAMP"
 fi
 
-# Schema antes do servidor, o mesmo caminho que o deploy usa. Sem banco
+# Schema antes do servidor. Sem banco
 # configurado o app sobe assim mesmo, so sem cache e sem link de retomada.
 if [ -n "$DATABASE_URL" ]; then
   node scripts/migrate.mjs

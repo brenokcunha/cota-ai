@@ -47,12 +47,3 @@ export function saveState(state: QuoteState): void {
     // Cota estourada: a busca continua funcionando, só não sobrevive ao refresh.
   }
 }
-
-export function clearState(): void {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.removeItem(KEY);
-  } catch {
-    // Nada a fazer — e nada que justifique quebrar a tela.
-  }
-}

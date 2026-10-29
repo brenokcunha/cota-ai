@@ -9,9 +9,6 @@ import type { Establishment } from "./places/types";
  * usuário, sem precisarmos construir um inbox.
  */
 
-/** Variáveis que o usuário pode usar no template, além das próprias dele. */
-export const BUILTIN_VARIABLES = ["nome"] as const;
-
 /**
  * Substitui `{{variavel}}` pelos valores informados.
  *

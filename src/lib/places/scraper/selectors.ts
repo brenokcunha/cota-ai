@@ -54,9 +54,6 @@ export const SELECTORS = {
   /** Marcador de fim da rolagem ("Você chegou ao final da lista"). */
   feedEnd: "span.HlvSq",
 
-  /** Painel da ficha do estabelecimento. */
-  detailPane: 'div[role="main"]',
-
   /** Nome do estabelecimento na ficha. */
   detailName: 'div[role="main"] h1',
 
@@ -66,7 +63,6 @@ export const SELECTORS = {
    */
   phoneButton: 'button[data-item-id^="phone:tel:"]',
   addressButton: 'button[data-item-id="address"]',
-  websiteLink: 'a[data-item-id="authority"]',
 
   /** Nota: o aria-label vem como "4,5 estrelas". */
   ratingLabel: 'div[role="main"] span[role="img"][aria-label*="estrela"]',

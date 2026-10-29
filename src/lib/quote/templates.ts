@@ -66,10 +66,6 @@ export const TEMPLATES: readonly MessageTemplate[] = [
   },
 ];
 
-export function findTemplate(id: string): MessageTemplate | undefined {
-  return TEMPLATES.find((template) => template.id === id);
-}
-
 /** Nomes de variável usados num template, na ordem em que aparecem. */
 export function extractVariables(body: string): string[] {
   const found = new Set<string>();

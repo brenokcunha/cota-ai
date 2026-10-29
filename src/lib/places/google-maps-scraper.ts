@@ -182,10 +182,7 @@ export class GoogleMapsScraperProvider implements PlacesProvider {
     const address = stripLabelPrefix(
       await attribute(page.locator(SELECTORS.addressButton).first(), "aria-label"),
     );
-    const phoneRaw = parsePhoneFromItemId(
-      await attribute(page.locator(SELECTORS.phoneButton).first(), "data-item-id"),
-    );
-    const phoneE164 = toE164(phoneRaw);
+    const phoneE164 = await this.readPhone(page);
     const { neighborhood, city, state } = parseCityState(address);
     const { lat, lng } = parseLatLng(currentUrl);
 
@@ -208,6 +205,26 @@ export class GoogleMapsScraperProvider implements PlacesProvider {
       source: "google-maps-scraper",
       scrapedAt: new Date().toISOString(),
     };
+  }
+
+  /**
+   * Escolhe o telefone da ficha.
+   *
+   * A ficha pode listar mais de um número, e o primeiro costuma ser o fixo.
+   * Como o produto envia por WhatsApp, vale mais o celular que o Google lista
+   * depois do que o fixo que vem na frente. Sem celular, fica o primeiro número
+   * válido, na ordem da ficha.
+   */
+  private async readPhone(page: Page): Promise<string | null> {
+    const buttons = await page.locator(SELECTORS.phoneButton).all();
+
+    const phones: string[] = [];
+    for (const button of buttons) {
+      const phone = toE164(parsePhoneFromItemId(await button.getAttribute("data-item-id")));
+      if (phone && !phones.includes(phone)) phones.push(phone);
+    }
+
+    return phones.find((phone) => guessWhatsapp(phone) === "likely") ?? phones[0] ?? null;
   }
 
   /**

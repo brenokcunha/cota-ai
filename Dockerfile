@@ -3,7 +3,7 @@
 #
 # A tag TEM QUE acompanhar a versão de `playwright` no package.json. Versões
 # diferentes fazem o Playwright procurar um browser que não está na imagem.
-FROM mcr.microsoft.com/playwright:v1.62.1-noble AS deps
+FROM mcr.microsoft.com/playwright:v1.64.1-noble AS deps
 
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
